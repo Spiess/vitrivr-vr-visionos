@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1799B85E2D196C8F0067FC9C /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 1799B85D2D196C8F0067FC9C /* RealityKitContent */; };
+		1799B87E2D196E420067FC9C /* FereLightSwiftClient in Frameworks */ = {isa = PBXBuildFile; productRef = 1799B87D2D196E420067FC9C /* FereLightSwiftClient */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1799B87E2D196E420067FC9C /* FereLightSwiftClient in Frameworks */,
 				1799B85E2D196C8F0067FC9C /* RealityKitContent in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -119,6 +121,7 @@
 			name = "vitrivr-VR";
 			packageProductDependencies = (
 				1799B85D2D196C8F0067FC9C /* RealityKitContent */,
+				1799B87D2D196E420067FC9C /* FereLightSwiftClient */,
 			);
 			productName = "vitrivr-VR";
 			productReference = 1799B8582D196C8F0067FC9C /* vitrivr-VR.app */;
@@ -175,6 +178,9 @@
 			);
 			mainGroup = 1799B84F2D196C8F0067FC9C;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				1799B87C2D196E420067FC9C /* XCRemoteSwiftPackageReference "ferelight-swift-client" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1799B8592D196C8F0067FC9C /* Products */;
 			projectDirPath = "";
@@ -472,10 +478,26 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		1799B87C2D196E420067FC9C /* XCRemoteSwiftPackageReference "ferelight-swift-client" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Spiess/ferelight-swift-client";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		1799B85D2D196C8F0067FC9C /* RealityKitContent */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RealityKitContent;
+		};
+		1799B87D2D196E420067FC9C /* FereLightSwiftClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1799B87C2D196E420067FC9C /* XCRemoteSwiftPackageReference "ferelight-swift-client" */;
+			productName = FereLightSwiftClient;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "vitrivr-VR-logo-back.png",
       "idiom" : "vision",
       "scale" : "2x"
     }
