@@ -13,6 +13,7 @@ import FereLightSwiftClient
 struct ContentView: View {
     @State private var inputText: String = ""
     @State private var collection: String = "v3c"
+    @State private var limit: Int = 200
     
     @State private var submissionText: String = ""
     
@@ -42,6 +43,12 @@ struct ContentView: View {
                     Text("V3C").tag("v3c")
                     Text("MVK").tag("mvk")
                     Text("LHE").tag("lhe")
+                }
+                Picker("Limit", selection: $limit) {
+                    Text("40").tag(40)
+                    Text("200").tag(200)
+                    Text("500").tag(500)
+                    Text("1000").tag(1000)
                 }
                 Button("Search") {
                     Task {
@@ -79,7 +86,6 @@ struct ContentView: View {
     
     func search() async {
         do {
-            let limit = 200
             let result = try await ferelightClient.query(database: collection, similarityText: inputText, ocrText: nil, limit: limit)
             openWindow(value: QueryDefinition(database: collection, similarityText: inputText, limit: limit, results: result.map {ResultPair(segmentId: $0.segmentId, score: $0.score)}))
         } catch {
