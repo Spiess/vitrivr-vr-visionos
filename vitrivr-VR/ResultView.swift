@@ -19,7 +19,6 @@ struct ResultView: View {
         self.queryDefinition = queryDefinition
         self.ferelightClient = ferelightClient
         self.numResults = queryDefinition.results.count
-        print("Results: \(numResults)")
     }
     
     var body: some View {
@@ -41,7 +40,6 @@ struct ResultView: View {
     }
     
     func openSegment(segmentID: String) async {
-        print(segmentID)
         do {
             let segmentInfo = try await ferelightClient.getSegmentInfo(database: queryDefinition.database, segmentId: segmentID)
             openWindow(value: VideoSegment(database: queryDefinition.database, objectId: segmentInfo.objectId, start: segmentInfo.segmentStartAbs))

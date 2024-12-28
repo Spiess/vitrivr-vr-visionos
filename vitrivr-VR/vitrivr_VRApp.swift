@@ -29,5 +29,9 @@ struct vitrivr_VRApp: App {
         WindowGroup(for: VideoSegment.self) { $vs in
             VideoView(database: vs!.database, objectId: vs!.objectId, startTime: vs!.start)
         }
+        
+        WindowGroup(id: "dres-config") {
+            DresConfigView()
+        }
     }
 }

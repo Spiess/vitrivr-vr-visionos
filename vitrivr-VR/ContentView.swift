@@ -14,6 +14,8 @@ struct ContentView: View {
     @State private var inputText: String = ""
     @State private var collection: String = "v3c"
     
+    @State private var submissionText: String = ""
+    
     @Environment(\.openWindow) private var openWindow
     
     private var ferelightClient: FereLightClient
@@ -47,6 +49,30 @@ struct ContentView: View {
                     }
                 }
             }
+            
+            Spacer()
+                .frame(height: 20)
+            
+            HStack {
+                Button("DRES Config") {
+                    openWindow(id: "dres-config")
+                }
+                TextField(
+                        "Submit text",
+                        text: $submissionText
+                    )
+                .onSubmit {
+                    Task {
+                        await submitText()
+                    }
+                }
+                .padding(.horizontal, 20)
+                Button("Submit Text") {
+                    Task {
+                        await submitText()
+                    }
+                }
+            }
         }
         .padding()
     }
@@ -57,7 +83,16 @@ struct ContentView: View {
             let result = try await ferelightClient.query(database: collection, similarityText: inputText, ocrText: nil, limit: limit)
             openWindow(value: QueryDefinition(database: collection, similarityText: inputText, limit: limit, results: result.map {ResultPair(segmentId: $0.segmentId, score: $0.score)}))
         } catch {
-            print("Error!")
+            print("Error during search!")
+        }
+    }
+    
+    func submitText() async {
+        do {
+            let result = try await DresConfig.dresClient?.submitText(evaluationId: DresConfig.currentEvaluation, text: submissionText)
+            print("Result of submit: \(result?.status ?? false) message: \(result?.description ?? "Unknown")")
+        } catch {
+            print("Error submitting text!")
         }
     }
 }

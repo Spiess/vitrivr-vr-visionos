@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		175A3BC12D2003DB00384527 /* DresSwiftClient in Frameworks */ = {isa = PBXBuildFile; productRef = 175A3BC02D2003DB00384527 /* DresSwiftClient */; };
 		1799B85E2D196C8F0067FC9C /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 1799B85D2D196C8F0067FC9C /* RealityKitContent */; };
 		1799B87E2D196E420067FC9C /* FereLightSwiftClient in Frameworks */ = {isa = PBXBuildFile; productRef = 1799B87D2D196E420067FC9C /* FereLightSwiftClient */; };
 /* End PBXBuildFile section */
@@ -60,6 +61,7 @@
 			files = (
 				1799B87E2D196E420067FC9C /* FereLightSwiftClient in Frameworks */,
 				1799B85E2D196C8F0067FC9C /* RealityKitContent in Frameworks */,
+				175A3BC12D2003DB00384527 /* DresSwiftClient in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,6 +124,7 @@
 			packageProductDependencies = (
 				1799B85D2D196C8F0067FC9C /* RealityKitContent */,
 				1799B87D2D196E420067FC9C /* FereLightSwiftClient */,
+				175A3BC02D2003DB00384527 /* DresSwiftClient */,
 			);
 			productName = "vitrivr-VR";
 			productReference = 1799B8582D196C8F0067FC9C /* vitrivr-VR.app */;
@@ -180,6 +183,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				1799B87C2D196E420067FC9C /* XCRemoteSwiftPackageReference "ferelight-swift-client" */,
+				175A3BBF2D2003DB00384527 /* XCRemoteSwiftPackageReference "dres-swift-client" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1799B8592D196C8F0067FC9C /* Products */;
@@ -479,6 +483,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		175A3BBF2D2003DB00384527 /* XCRemoteSwiftPackageReference "dres-swift-client" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Spiess/dres-swift-client";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		1799B87C2D196E420067FC9C /* XCRemoteSwiftPackageReference "ferelight-swift-client" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Spiess/ferelight-swift-client";
@@ -490,6 +502,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		175A3BC02D2003DB00384527 /* DresSwiftClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 175A3BBF2D2003DB00384527 /* XCRemoteSwiftPackageReference "dres-swift-client" */;
+			productName = DresSwiftClient;
+		};
 		1799B85D2D196C8F0067FC9C /* RealityKitContent */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RealityKitContent;
