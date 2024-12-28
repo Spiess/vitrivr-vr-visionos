@@ -40,7 +40,10 @@ struct ResultView: View {
                                 if i >= numResults {
                                     Spacer()
                                 } else {
-                                    AsyncImage(url: ResourceUtility.getThumbnailUrl(collection: queryDefinition.database, segmentId: queryDefinition.results[i].segmentId)).scaledToFit()
+                                    AsyncImage(url: ResourceUtility.getThumbnailUrl(collection: queryDefinition.database, segmentId: queryDefinition.results[i].segmentId)) { image in
+                                        image.image?.resizable().scaledToFit()
+                                    }
+                                        .scaledToFit()
                                         .onTapGesture {
                                             Task {
                                                 await openSegment(segmentID: queryDefinition.results[i].segmentId)
