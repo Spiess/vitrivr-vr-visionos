@@ -13,12 +13,17 @@ struct ResultView: View {
     let ferelightClient: FereLightClient
     let numResults: Int
     
+    let resultColumns: Int = 5
+    let resultRows: Int
+    
+    
     @Environment(\.openWindow) private var openWindow
         
     init(queryDefinition: QueryDefinition, ferelightClient: FereLightClient) {
         self.queryDefinition = queryDefinition
         self.ferelightClient = ferelightClient
         self.numResults = queryDefinition.results.count
+        self.resultRows = Int(ceil(Double(numResults) / Double(resultColumns)))
     }
     
     var body: some View {
@@ -27,13 +32,24 @@ struct ResultView: View {
                 Text("Results")
                     .font(.headline)
                     .padding()
-                ForEach(0..<numResults, id: \.self) {i in
-                    AsyncImage(url: ResourceUtility.getThumbnailUrl(collection: queryDefinition.database, segmentId: queryDefinition.results[i].segmentId)).scaledToFit()
-                        .onTapGesture {
-                            Task {
-                                await openSegment(segmentID: queryDefinition.results[i].segmentId)
+                Grid {
+                    ForEach(0..<resultRows, id: \.self) {row in
+                        GridRow {
+                            ForEach(0..<resultColumns, id: \.self) {column in
+                                let i = row * resultColumns + column
+                                if i >= numResults {
+                                    Spacer()
+                                } else {
+                                    AsyncImage(url: ResourceUtility.getThumbnailUrl(collection: queryDefinition.database, segmentId: queryDefinition.results[i].segmentId)).scaledToFit()
+                                        .onTapGesture {
+                                            Task {
+                                                await openSegment(segmentID: queryDefinition.results[i].segmentId)
+                                            }
+                                        }
+                                }
                             }
                         }
+                    }
                 }
             }
         }
