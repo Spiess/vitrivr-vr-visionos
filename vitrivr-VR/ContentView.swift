@@ -12,6 +12,7 @@ import FereLightSwiftClient
 
 struct ContentView: View {
     @State private var inputText: String = ""
+    @State private var collection: String = "v3c"
     
     @Environment(\.openWindow) private var openWindow
     
@@ -34,9 +35,16 @@ struct ContentView: View {
             }
             .padding(.horizontal, 20)
             
-            Button("Search") {
-                Task {
-                    await search()
+            HStack {
+                Picker("Collection", selection: $collection) {
+                    Text("V3C").tag("v3c")
+                    Text("MVK").tag("mvk")
+                    Text("LHE").tag("lhe")
+                }
+                Button("Search") {
+                    Task {
+                        await search()
+                    }
                 }
             }
         }
@@ -46,8 +54,8 @@ struct ContentView: View {
     func search() async {
         do {
             let limit = 200
-            let result = try await ferelightClient.query(database: "v3c", similarityText: inputText, ocrText: nil, limit: limit)
-            openWindow(value: QueryDefinition(database: "v3c", similarityText: inputText, limit: limit, results: result.map {ResultPair(segmentId: $0.segmentId, score: $0.score)}))
+            let result = try await ferelightClient.query(database: collection, similarityText: inputText, ocrText: nil, limit: limit)
+            openWindow(value: QueryDefinition(database: collection, similarityText: inputText, limit: limit, results: result.map {ResultPair(segmentId: $0.segmentId, score: $0.score)}))
         } catch {
             print("Error!")
         }
