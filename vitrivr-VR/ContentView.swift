@@ -12,7 +12,6 @@ import FereLightSwiftClient
 
 struct ContentView: View {
     @State private var inputText: String = ""
-    @State private var resultText: String = ""
     
     @Environment(\.openWindow) private var openWindow
     
@@ -28,6 +27,11 @@ struct ContentView: View {
                     "Input text",
                     text: $inputText
                 )
+            .onSubmit {
+                Task {
+                    await search()
+                }
+            }
             .padding(.horizontal, 20)
             
             Button("Search") {
@@ -35,17 +39,15 @@ struct ContentView: View {
                     await search()
                 }
             }
-            Text("Results: " + resultText)
         }
         .padding()
     }
     
     func search() async {
-        print("entering search")
         do {
-            let result = try await ferelightClient.query(database: "v3c", similarityText: inputText, ocrText: nil, limit: 100)
-            resultText = String(describing: result)
-            openWindow(value: QueryDefinition(database: "v3c", similarityText: inputText, limit: 10, results: result.map {ResultPair(segmentId: $0.segmentId, score: $0.score)}))
+            let limit = 200
+            let result = try await ferelightClient.query(database: "v3c", similarityText: inputText, ocrText: nil, limit: limit)
+            openWindow(value: QueryDefinition(database: "v3c", similarityText: inputText, limit: limit, results: result.map {ResultPair(segmentId: $0.segmentId, score: $0.score)}))
         } catch {
             print("Error!")
         }

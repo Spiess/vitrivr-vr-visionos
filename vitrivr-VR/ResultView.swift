@@ -12,18 +12,14 @@ struct ResultView: View {
     let queryDefinition: QueryDefinition
     let ferelightClient: FereLightClient
     let numResults: Int
+    
+    @Environment(\.openWindow) private var openWindow
         
     init(queryDefinition: QueryDefinition, ferelightClient: FereLightClient) {
         self.queryDefinition = queryDefinition
         self.ferelightClient = ferelightClient
         self.numResults = queryDefinition.results.count
-    }
-    
-    private func getThumbnailURL(segmentId: String) -> URL {
-        // Remove last _ and remaining part of segmentId for objectId
-        let lastUnderscoreIndex = segmentId.lastIndex(of: "_")
-        let objectId = String(segmentId[..<lastUnderscoreIndex!])
-        return URL(string: "http://dmi-21-pc-02.local:8090/v3c/thumbnails/\(objectId)/\(segmentId).jpg")!
+        print("Results: \(numResults)")
     }
     
     var body: some View {
@@ -33,7 +29,7 @@ struct ResultView: View {
                     .font(.headline)
                     .padding()
                 ForEach(0..<numResults, id: \.self) {i in
-                    AsyncImage(url: getThumbnailURL(segmentId: queryDefinition.results[i].segmentId)).scaledToFit()
+                    AsyncImage(url: ResourceUtility.getThumbnailUrl(collection: queryDefinition.database, segmentId: queryDefinition.results[i].segmentId)).scaledToFit()
                         .onTapGesture {
                             Task {
                                 await openSegment(segmentID: queryDefinition.results[i].segmentId)
@@ -46,6 +42,13 @@ struct ResultView: View {
     
     func openSegment(segmentID: String) async {
         print(segmentID)
+        do {
+            let segmentInfo = try await ferelightClient.getSegmentInfo(database: queryDefinition.database, segmentId: segmentID)
+            openWindow(value: VideoSegment(database: queryDefinition.database, objectId: segmentInfo.objectId, start: segmentInfo.segmentStartAbs))
+        }
+        catch {
+            print("Error opening segment: \(error)")
+        }
     }
 }
 

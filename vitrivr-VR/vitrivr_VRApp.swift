@@ -25,5 +25,9 @@ struct vitrivr_VRApp: App {
         WindowGroup(for: QueryDefinition.self) { $qd in
             ResultView(queryDefinition: qd!, ferelightClient: ferelightClient)
         }
+        
+        WindowGroup(for: VideoSegment.self) { $vs in
+            VideoView(database: vs!.database, objectId: vs!.objectId, startTime: vs!.start)
+        }
     }
 }

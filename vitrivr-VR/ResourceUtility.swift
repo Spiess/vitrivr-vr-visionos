@@ -14,4 +14,8 @@ struct ResourceUtility {
         let objectId = String(segmentId[..<lastUnderscoreIndex!])
         return URL(string: "http://dmi-21-pc-02.local:8090/\(collection)/thumbnails/\(objectId)/\(segmentId).jpg")!
     }
+    
+    static func getVideoUrl(collection: String, objectId: String) -> URL {
+        return URL(string: "http://dmi-21-pc-02.local:8090/\(collection)/videos/\(objectId).mp4")!
+    }
 }
