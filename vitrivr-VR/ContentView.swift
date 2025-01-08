@@ -39,11 +39,13 @@ struct ContentView: View {
             .padding(.horizontal, 20)
             
             HStack {
+                Text("Collection: ")
                 Picker("Collection", selection: $collection) {
                     Text("V3C").tag("v3c")
                     Text("MVK").tag("mvk")
                     Text("LHE").tag("lhe")
                 }
+                Text("Results: ")
                 Picker("Limit", selection: $limit) {
                     Text("40").tag(40)
                     Text("200").tag(200)
