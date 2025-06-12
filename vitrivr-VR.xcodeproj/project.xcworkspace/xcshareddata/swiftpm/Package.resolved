@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Spiess/ferelight-swift-client",
       "state" : {
-        "revision" : "97c5730c0a7946bf186a6f3c424689cf2c5436a5",
-        "version" : "1.0.2"
+        "revision" : "b41d3ecbd4165b769160fd9bcf9c32e1f249ef48",
+        "version" : "1.1.0"
       }
     },
     {
@@ -78,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-openapi-generator",
       "state" : {
-        "revision" : "ad7f0e73246f5083733dbc025097fcdf0fbee2a1",
-        "version" : "1.6.0"
+        "revision" : "02cab48b66b4b412013827c2938adaf0eb67dc8d",
+        "version" : "1.7.2"
       }
     },
     {
