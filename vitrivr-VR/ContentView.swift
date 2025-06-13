@@ -12,6 +12,7 @@ import FereLightSwiftClient
 
 struct ContentView: View {
     @State private var inputText: String = ""
+    @State private var ocrText: String = ""
     @State private var collection: String = "v3c"
     @State private var limit: Int = 200
     
@@ -30,6 +31,16 @@ struct ContentView: View {
             TextField(
                     "Input text",
                     text: $inputText
+                )
+            .onSubmit {
+                Task {
+                    await search()
+                }
+            }
+            .padding(.horizontal, 20)
+            TextField(
+                    "OCR text",
+                    text: $ocrText
                 )
             .onSubmit {
                 Task {
@@ -88,7 +99,8 @@ struct ContentView: View {
     
     func search() async {
         do {
-            let result = try await ferelightClient.query(database: collection, similarityText: inputText, ocrText: nil, limit: limit)
+            let ocrTextInput = ocrText.isEmpty ? nil : ocrText
+            let result = try await ferelightClient.query(database: collection, similarityText: inputText, ocrText: ocrTextInput, limit: limit)
             openWindow(value: QueryDefinition(database: collection, similarityText: inputText, limit: limit, results: result.map {ResultPair(segmentId: $0.segmentId, score: $0.score)}))
         } catch {
             print("Error during search!")
