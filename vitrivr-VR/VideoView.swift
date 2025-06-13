@@ -15,6 +15,8 @@ struct VideoView: View {
     
     @State var player: AVPlayer
     
+    @State private var feedbackText: String = ""
+    
     init(database: String, objectId: String, startTime: Double) {
         self.database = database
         self.objectId = objectId
@@ -27,16 +29,21 @@ struct VideoView: View {
     var body: some View {
         VideoPlayer(player: player)
         if DresConfig.dresClient != nil {
-            Button("Submit") {
-                Task {
-                    var itemId = objectId
-                    if database != "lhe" {
-                        itemId = String(itemId.dropFirst(2))
+            HStack {
+                Button("Submit") {
+                    Task {
+                        var itemId = objectId
+                        if database != "lhe" {
+                            itemId = String(itemId.dropFirst(2))
+                        }
+                        let time = Int64(player.currentTime().seconds * 1000)
+                        let result = try await DresConfig.dresClient?.submit(evaluationId: DresConfig.currentEvaluation, item: itemId, start: time, end: time)
+                        print("Result of submit: \(result?.status ?? false) message: \(result?.description ?? "Unknown")")
+                        feedbackText = result?.description ?? "Error parsing response"
                     }
-                    let time = Int64(player.currentTime().seconds * 1000)
-                    let result = try await DresConfig.dresClient?.submit(evaluationId: DresConfig.currentEvaluation, item: itemId, start: time, end: time)
-                    print("Result of submit: \(result?.status ?? false) message: \(result?.description ?? "Unknown")")
                 }
+                
+                Text(feedbackText)
             }
         }
     }
