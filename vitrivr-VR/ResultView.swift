@@ -15,7 +15,8 @@ struct ResultView: View {
     
     let resultColumns: Int = 5
     let resultRows: Int
-    
+
+    @State private var visibleRows: Int = 1 // Start with the first row visible
     
     @Environment(\.openWindow) private var openWindow
         
@@ -33,22 +34,34 @@ struct ResultView: View {
                     .font(.headline)
                     .padding()
                 Grid {
-                    ForEach(0..<resultRows, id: \.self) {row in
-                        GridRow {
-                            ForEach(0..<resultColumns, id: \.self) {column in
-                                let i = row * resultColumns + column
-                                if i >= numResults {
-                                    Spacer()
-                                } else {
-                                    AsyncImage(url: ResourceUtility.getThumbnailUrl(collection: queryDefinition.database, segmentId: queryDefinition.results[i].segmentId)) { image in
-                                        image.image?.resizable().scaledToFit()
-                                    }
+                    ForEach(0..<resultRows, id: \.self) { row in
+                        if row < visibleRows {
+                            GridRow {
+                                ForEach(0..<resultColumns, id: \.self) { column in
+                                    let i = row * resultColumns + column
+                                    if i >= numResults {
+                                        Spacer()
+                                    } else {
+                                        AsyncImage(url: ResourceUtility.getThumbnailUrl(collection: queryDefinition.database, segmentId: queryDefinition.results[i].segmentId)) { image in
+                                            image.image?.resizable().scaledToFit()
+                                        }
                                         .scaledToFit()
+                                        .onAppear {
+                                            // When the last image in this row appears, reveal the next row
+                                            if column == resultColumns - 1 || i == numResults - 1 {
+                                                if visibleRows < resultRows {
+                                                    DispatchQueue.main.async {
+                                                        visibleRows += 1
+                                                    }
+                                                }
+                                            }
+                                        }
                                         .onTapGesture {
                                             Task {
                                                 await openSegment(segmentID: queryDefinition.results[i].segmentId)
                                             }
                                         }
+                                    }
                                 }
                             }
                         }
