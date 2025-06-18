@@ -16,6 +16,7 @@ struct QueryDefinition: Decodable, Encodable, Hashable {
     var database: String
     var similarityText: String?
     var ocrText: String?
+    var segmentId: String?
     var limit: Int
     var results: [ResultPair]
 }

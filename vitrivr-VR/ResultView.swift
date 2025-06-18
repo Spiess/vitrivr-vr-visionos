@@ -42,24 +42,40 @@ struct ResultView: View {
                                     if i >= numResults {
                                         Spacer()
                                     } else {
-                                        AsyncImage(url: ResourceUtility.getThumbnailUrl(collection: queryDefinition.database, segmentId: queryDefinition.results[i].segmentId)) { image in
-                                            image.image?.resizable().scaledToFit()
-                                        }
-                                        .scaledToFit()
-                                        .onAppear {
-                                            // When the last image in this row appears, reveal the next row
-                                            if column == resultColumns - 1 || i == numResults - 1 {
-                                                if visibleRows < resultRows {
-                                                    DispatchQueue.main.async {
-                                                        visibleRows += 1
+                                        ZStack(alignment: .topTrailing) {
+                                            AsyncImage(url: ResourceUtility.getThumbnailUrl(collection: queryDefinition.database, segmentId: queryDefinition.results[i].segmentId)) { image in
+                                                image.image?.resizable().scaledToFit()
+                                            }
+                                            .scaledToFit()
+                                            .onAppear {
+                                                // When the last image in this row appears, reveal the next row
+                                                if column == resultColumns - 1 || i == numResults - 1 {
+                                                    if visibleRows < resultRows {
+                                                        DispatchQueue.main.async {
+                                                            visibleRows += 1
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
-                                        .onTapGesture {
-                                            Task {
-                                                await openSegment(segmentID: queryDefinition.results[i].segmentId)
+                                            .onTapGesture {
+                                                Task {
+                                                    await openSegment(segmentID: queryDefinition.results[i].segmentId)
+                                                }
                                             }
+                                            Button(action: {
+                                                Task {
+                                                    await moreLikeThisSearch(segmentID: queryDefinition.results[i].segmentId)
+                                                }
+                                            }) {
+                                                Image(systemName: "magnifyingglass")
+                                                    .foregroundColor(.blue)
+                                                    .padding(6)
+                                                    .background(Color.white.opacity(0.8))
+                                                    .clipShape(Circle())
+                                                    .shadow(radius: 1)
+                                            }
+                                            .buttonStyle(PlainButtonStyle())
+                                            .padding(4)
                                         }
                                     }
                                 }
@@ -78,6 +94,15 @@ struct ResultView: View {
         }
         catch {
             print("Error opening segment: \(error)")
+        }
+    }
+    
+    func moreLikeThisSearch(segmentID: String) async {
+        do {
+            let result = try await ferelightClient.queryByExample(database: queryDefinition.database, segmentId: segmentID, limit: queryDefinition.limit)
+            openWindow(value: QueryDefinition(database: queryDefinition.database, segmentId: segmentID, limit: queryDefinition.limit, results: result.map {ResultPair(segmentId: $0.segmentId, score: $0.score)}))
+        } catch {
+            print("Error during search!")
         }
     }
 }
