@@ -11,24 +11,35 @@ import FereLightSwiftClient
 @main
 struct vitrivr_VRApp: App {
     
-    private var ferelightClient: FereLightClient
-    
-    init() {
-        ferelightClient = FereLightSwiftClient.FereLightClient(url: URL(string: "http://dmi-21-pc-02.local:8080")!)
-    }
+    @StateObject private var configManager = ConfigManager()
+    @StateObject private var clientManager = ClientManager()
     
     var body: some Scene {
         WindowGroup {
-            ContentView(ferelightClient: ferelightClient)
+            ContentView()
+                .environmentObject(configManager)
+                .environmentObject(clientManager)
+                .onAppear {
+                    if let config = configManager.config{
+                        clientManager.createClients(with: config)
+                    }
+                }
         }.defaultSize(width: 800, height: 200)
         
         WindowGroup(for: QueryDefinition.self) { $qd in
-            ResultView(queryDefinition: qd!, ferelightClient: ferelightClient)
+            ResultView(queryDefinition: qd!)
+                .environmentObject(clientManager)
         }
         
         WindowGroup(for: VideoSegment.self) { $vs in
             VideoView(database: vs!.database, objectId: vs!.objectId, startTime: vs!.start)
         }
+        
+        WindowGroup(id: "config") {
+            ConfigImportView()
+                .environmentObject(configManager)
+                .environmentObject(clientManager)
+        }.defaultSize(width: 300, height: 200)
         
         WindowGroup(id: "dres-config") {
             DresConfigView()

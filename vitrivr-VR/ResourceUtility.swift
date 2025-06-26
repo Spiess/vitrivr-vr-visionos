@@ -8,29 +8,25 @@
 import Foundation
 
 struct ResourceUtility {
-    static let resourceHost = "http://dmi-21-pc-02.local:8090"
+    static var config: Config?
     
     static func getThumbnailUrl(collection: String, segmentId: String) -> URL {
-        if (collection == "lhe") {
-            return URL(string: "\(resourceHost)/\(collection)/thumbnails/\(segmentId).jpg")!
-        }
         // Remove last _ and remaining part of segmentId for objectId
         let lastUnderscoreIndex = segmentId.lastIndex(of: "_")
         let objectId = String(segmentId[..<lastUnderscoreIndex!])
-        return URL(string: "\(resourceHost)/\(collection)/thumbnails/\(objectId)/\(segmentId).jpg")!
+
+        
+        let path = config!.collections[collection]!.thumbnailPattern
+            .replacingOccurrences(of: ":c", with: collection)
+            .replacingOccurrences(of: ":id", with: segmentId)
+            .replacingOccurrences(of: ":oid", with: objectId)
+        return URL(string: "\(config!.mediaHost)/\(path)")!
     }
     
     static func getVideoUrl(collection: String, objectId: String) -> URL {
-        switch collection {
-        case "v3c":
-            return URL(string: "\(resourceHost)/\(collection)/videos/\(objectId).mp4")!
-        case "mvk":
-            let videoId = String(objectId.dropFirst(2))
-            return URL(string: "\(resourceHost)/\(collection)/videos/\(videoId).mp4")!
-        case "lhe":
-            return URL(string: "\(resourceHost)/\(collection)/videos/\(objectId).mp4")!
-        default:
-            return URL(string: "\(resourceHost)/\(collection)/videos/\(objectId).mp4")!
-        }
+        let path = config!.collections[collection]!.mediaPattern
+            .replacingOccurrences(of: ":c", with: collection)
+            .replacingOccurrences(of: ":oid", with: objectId)
+        return URL(string: "\(config!.mediaHost)/\(path)")!
     }
 }

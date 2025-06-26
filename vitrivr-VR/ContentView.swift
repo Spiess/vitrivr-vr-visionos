@@ -13,18 +13,15 @@ import FereLightSwiftClient
 struct ContentView: View {
     @State private var inputText: String = ""
     @State private var ocrText: String = ""
-    @State private var collection: String = "v3c"
+    @State private var collection: String = ""
     @State private var limit: Int = 200
     
     @State private var submissionText: String = ""
     
     @Environment(\.openWindow) private var openWindow
     
-    private var ferelightClient: FereLightClient
-    
-    init(ferelightClient: FereLightClient) {
-        self.ferelightClient = ferelightClient
-    }
+    @EnvironmentObject var configManager: ConfigManager
+    @EnvironmentObject var clientManager: ClientManager
     
     var body: some View {
         VStack {
@@ -52,9 +49,19 @@ struct ContentView: View {
             HStack {
                 Text("Collection: ")
                 Picker("Collection", selection: $collection) {
-                    Text("V3C").tag("v3c")
-                    Text("MVK").tag("mvk")
-                    Text("LHE").tag("lhe")
+                    ForEach(Array(configManager.config!.collections.keys), id: \.self) { cid in
+                        if let params = configManager.config!.collections[cid] {
+                            Text(params.name).tag(cid)
+                        }
+                    }
+                }
+                .onAppear {
+                    if collection.isEmpty {
+                        collection = configManager.config!.collections.keys.first!
+                    }
+                }
+                .onChange(of: configManager.config?.collections.keys.first) {
+                    collection = configManager.config!.collections.keys.first!
                 }
                 Text("Results: ")
                 Picker("Limit", selection: $limit) {
@@ -74,6 +81,9 @@ struct ContentView: View {
                 .frame(height: 20)
             
             HStack {
+                Button("Config") {
+                    openWindow(id: "config")
+                }
                 Button("DRES Config") {
                     openWindow(id: "dres-config")
                 }
@@ -100,7 +110,7 @@ struct ContentView: View {
     func search() async {
         do {
             let ocrTextInput = ocrText.isEmpty ? nil : ocrText
-            let result = try await ferelightClient.query(database: collection, similarityText: inputText, ocrText: ocrTextInput, limit: limit)
+            let result = try await clientManager.ferelightClient!.query(database: collection, similarityText: inputText, ocrText: ocrTextInput, limit: limit)
             openWindow(value: QueryDefinition(database: collection, similarityText: inputText, limit: limit, results: result.map {ResultPair(segmentId: $0.segmentId, score: $0.score)}))
         } catch {
             print("Error during search!")
@@ -118,5 +128,5 @@ struct ContentView: View {
 }
 
 #Preview(windowStyle: .automatic) {
-    ContentView(ferelightClient: FereLightSwiftClient.FereLightClient(url: URL(string: "http://localhost:8080")!))
+    ContentView()
 }

@@ -10,7 +10,6 @@ import FereLightSwiftClient
 
 struct ResultView: View {
     let queryDefinition: QueryDefinition
-    let ferelightClient: FereLightClient
     let numResults: Int
     
     let resultColumns: Int = 5
@@ -19,10 +18,12 @@ struct ResultView: View {
     @State private var visibleRows: Int = 1 // Start with the first row visible
     
     @Environment(\.openWindow) private var openWindow
+    
+    @EnvironmentObject var configManager: ConfigManager
+    @EnvironmentObject var clientManager: ClientManager
         
-    init(queryDefinition: QueryDefinition, ferelightClient: FereLightClient) {
+    init(queryDefinition: QueryDefinition) {
         self.queryDefinition = queryDefinition
-        self.ferelightClient = ferelightClient
         self.numResults = queryDefinition.results.count
         self.resultRows = Int(ceil(Double(numResults) / Double(resultColumns)))
     }
@@ -43,7 +44,7 @@ struct ResultView: View {
                                         Spacer()
                                     } else {
                                         ZStack(alignment: .topTrailing) {
-                                            AsyncImage(url: ResourceUtility.getThumbnailUrl(collection: queryDefinition.database, segmentId: queryDefinition.results[i].segmentId)) { image in
+                                            AsyncImage(url: ResourceUtility.getThumbnailUrl( collection: queryDefinition.database, segmentId: queryDefinition.results[i].segmentId)) { image in
                                                 image.image?.resizable().scaledToFit()
                                             }
                                             .scaledToFit()
@@ -89,7 +90,7 @@ struct ResultView: View {
     
     func openSegment(segmentID: String) async {
         do {
-            let segmentInfo = try await ferelightClient.getSegmentInfo(database: queryDefinition.database, segmentId: segmentID)
+            let segmentInfo = try await clientManager.ferelightClient!.getSegmentInfo(database: queryDefinition.database, segmentId: segmentID)
             openWindow(value: VideoSegment(database: queryDefinition.database, objectId: segmentInfo.objectId, start: segmentInfo.segmentStartAbs))
         }
         catch {
@@ -99,7 +100,7 @@ struct ResultView: View {
     
     func moreLikeThisSearch(segmentID: String) async {
         do {
-            let result = try await ferelightClient.queryByExample(database: queryDefinition.database, segmentId: segmentID, limit: queryDefinition.limit)
+            let result = try await clientManager.ferelightClient!.queryByExample(database: queryDefinition.database, segmentId: segmentID, limit: queryDefinition.limit)
             openWindow(value: QueryDefinition(database: queryDefinition.database, segmentId: segmentID, limit: queryDefinition.limit, results: result.map {ResultPair(segmentId: $0.segmentId, score: $0.score)}))
         } catch {
             print("Error during search!")
@@ -108,5 +109,5 @@ struct ResultView: View {
 }
 
 #Preview {
-    ResultView(queryDefinition: QueryDefinition(database: "v3c", similarityText: "Test", limit: 10, results: [ResultPair(segmentId: "v_00001_1", score: 0.5)]), ferelightClient: FereLightSwiftClient.FereLightClient(url: URL(string: "http://localhost:8080")!))
+    ResultView(queryDefinition: QueryDefinition(database: "v3c", similarityText: "Test", limit: 10, results: [ResultPair(segmentId: "v_00001_1", score: 0.5)]))
 }
