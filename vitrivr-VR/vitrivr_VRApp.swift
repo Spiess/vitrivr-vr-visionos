@@ -14,15 +14,25 @@ struct vitrivr_VRApp: App {
     @StateObject private var configManager = ConfigManager()
     @StateObject private var clientManager = ClientManager()
     
+    init() {
+        // Register default values for settings
+        UserDefaults.standard.register(defaults: [
+            "media_host": "http://localhost:8000",
+            "ferelight_host": "http://localhost:8080",
+            "dres_enabled": false,
+            "dres_host": "https://vbs.videobrowsing.org",
+            "dres_user": "user",
+            "dres_password": "password"
+        ])
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(configManager)
                 .environmentObject(clientManager)
                 .onAppear {
-                    if let config = configManager.config{
-                        clientManager.createClients(with: config)
-                    }
+                    clientManager.createClients()
                 }
         }.defaultSize(width: 800, height: 200)
         

@@ -11,12 +11,12 @@ struct ConfigImportView: View {
             Text("Current Media Host:")
                 .font(.headline)
 
-            if let mediaHost = configManager.config?.mediaHost {
+            if let mediaHost = UserDefaults.standard.string(forKey: "media_host") {
                 Text(mediaHost)
                     .font(.subheadline)
                     .foregroundColor(.green)
             } else {
-                Text("No config loaded")
+                Text("Media host not set")
                     .foregroundColor(.red)
             }
 
@@ -47,7 +47,7 @@ struct ConfigImportView: View {
                         try FileManager.default.copyItem(at: selectedURL, to: destURL)
 
                         configManager.loadConfig()
-                        clientManager.createClients(with: configManager.config!)
+                        clientManager.createClients()
                     } catch {
                         print("Failed to copy config: \(error)")
                     }

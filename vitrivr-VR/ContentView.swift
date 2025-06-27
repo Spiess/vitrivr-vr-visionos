@@ -60,8 +60,8 @@ struct ContentView: View {
                         collection = configManager.config!.collections.keys.first!
                     }
                 }
-                .onChange(of: configManager.config?.collections.keys.first) {
-                    collection = configManager.config!.collections.keys.first!
+                .onReceive(configManager.$config) { newConfig in
+                    collection = newConfig!.collections.keys.first!
                 }
                 Text("Results: ")
                 Picker("Limit", selection: $limit) {

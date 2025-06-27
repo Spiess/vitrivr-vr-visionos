@@ -12,7 +12,7 @@ import FereLightSwiftClient
 class ClientManager: ObservableObject {
     @Published var ferelightClient: FereLightClient?
 
-    func createClients(with config: Config) {
-        ferelightClient = FereLightSwiftClient.FereLightClient(url: URL(string: config.ferelightHost)!)
+    func createClients() {
+        ferelightClient = FereLightSwiftClient.FereLightClient(url: URL(string: UserDefaults.standard.string(forKey: "ferelight_host")!)!)
     }
 }

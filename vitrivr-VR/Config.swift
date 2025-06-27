@@ -9,8 +9,6 @@ import Foundation
 
 
 struct Config: Codable {
-    let ferelightHost: String
-    let mediaHost: String
     let collections: [String: CollectionConfig]
 }
 
@@ -47,8 +45,6 @@ class ConfigManager: ObservableObject {
     
     func getDefaultConfig() -> Config {
         return Config(
-            ferelightHost: "localhost:8080",
-            mediaHost: "localhost",
             collections: ["default": CollectionConfig(name: "Default", thumbnailPattern: ":c/thumbnails/:id.jpg", mediaPattern: ":c/videos/:oid.mp4")]
         )
     }
