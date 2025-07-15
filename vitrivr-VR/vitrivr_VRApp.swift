@@ -34,6 +34,15 @@ struct vitrivr_VRApp: App {
                 .onAppear {
                     clientManager.createClients()
                 }
+                .task {
+                    if UserDefaults.standard.bool(forKey: "dres_enabled") {
+                        do {
+                            try await DresConfig.login()
+                        } catch {
+                            print("Error logging into DRES: \(error)")
+                        }
+                    }
+                }
         }.defaultSize(width: 800, height: 200)
         
         WindowGroup(for: QueryDefinition.self) { $qd in
@@ -49,10 +58,6 @@ struct vitrivr_VRApp: App {
             ConfigImportView()
                 .environmentObject(configManager)
                 .environmentObject(clientManager)
-        }.defaultSize(width: 300, height: 200)
-        
-        WindowGroup(id: "dres-config") {
-            DresConfigView()
-        }.defaultSize(width: 400, height: 300)
+        }.defaultSize(width: 500, height: 500)
     }
 }

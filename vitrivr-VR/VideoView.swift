@@ -37,7 +37,7 @@ struct VideoView: View {
                             itemId = String(itemId.dropFirst(2))
                         }
                         let time = Int64(player.currentTime().seconds * 1000)
-                        let result = try await DresConfig.dresClient?.submit(evaluationId: DresConfig.currentEvaluation, item: itemId, start: time, end: time)
+                        let result = try await DresConfig.dresClient?.submit(evaluationId: DresConfig.currentEvaluation!, item: itemId, start: time, end: time)
                         print("Result of submit: \(result?.status ?? false) message: \(result?.description ?? "Unknown")")
                         feedbackText = result?.description ?? "Error parsing response"
                     }

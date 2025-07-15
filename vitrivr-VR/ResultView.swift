@@ -45,6 +45,9 @@ struct ResultView: View {
                                     } else {
                                         ZStack(alignment: .topTrailing) {
                                             AsyncImage(url: ResourceUtility.getThumbnailUrl( collection: queryDefinition.database, segmentId: queryDefinition.results[i].segmentId)) { image in
+                                                if let error = image.error {
+                                                    let _ = print("Error loading image on path \(ResourceUtility.getThumbnailUrl( collection: queryDefinition.database, segmentId: queryDefinition.results[i].segmentId)) -> \(error)")
+                                                }
                                                 image.image?.resizable().scaledToFit()
                                             }
                                             .scaledToFit()

@@ -8,7 +8,7 @@ struct ConfigImportView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("Current Media Host:")
+            Text("Media Host:")
                 .font(.headline)
 
             if let mediaHost = UserDefaults.standard.string(forKey: "media_host") {
@@ -18,6 +18,33 @@ struct ConfigImportView: View {
             } else {
                 Text("Media host not set")
                     .foregroundColor(.red)
+            }
+            
+            Text("FERElight Host:")
+                .font(.headline)
+
+            if let ferelight_host = UserDefaults.standard.string(forKey: "ferelight_host") {
+                Text(ferelight_host)
+                    .font(.subheadline)
+                    .foregroundColor(.green)
+            } else {
+                Text("FERElight host not set")
+                    .foregroundColor(.red)
+            }
+            
+            if UserDefaults.standard.bool(forKey: "dres_enabled") {
+                Text("DRES Enabled")
+                if DresConfig.dresClient == nil {
+                    Text("DRES Not Connected!")
+                        .foregroundColor(.red)
+                } else {
+                    Text("DRES Connected")
+                        .foregroundColor(.green)
+                }
+                Text("DRES Host: \(UserDefaults.standard.string(forKey: "dres_host") ?? "Error")")
+                Text("DRES User: \(UserDefaults.standard.string(forKey: "dres_user") ?? "Error")")
+            } else {
+                Text("DRES Disabled")
             }
 
             Button("Import Config File") {

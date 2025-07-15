@@ -84,22 +84,21 @@ struct ContentView: View {
                 Button("Config") {
                     openWindow(id: "config")
                 }
-                Button("DRES Config") {
-                    openWindow(id: "dres-config")
-                }
-                TextField(
+                if UserDefaults.standard.bool(forKey: "dres_enabled") {
+                    TextField(
                         "Submit text",
                         text: $submissionText
                     )
-                .onSubmit {
-                    Task {
-                        await submitText()
+                    .onSubmit {
+                        Task {
+                            await submitText()
+                        }
                     }
-                }
-                .padding(.horizontal, 20)
-                Button("Submit Text") {
-                    Task {
-                        await submitText()
+                    .padding(.horizontal, 20)
+                    Button("Submit Text") {
+                        Task {
+                            await submitText()
+                        }
                     }
                 }
             }
@@ -119,7 +118,7 @@ struct ContentView: View {
     
     func submitText() async {
         do {
-            let result = try await DresConfig.dresClient?.submitText(evaluationId: DresConfig.currentEvaluation, text: submissionText)
+            let result = try await DresConfig.dresClient?.submitText(evaluationId: DresConfig.currentEvaluation!, text: submissionText)
             print("Result of submit: \(result?.status ?? false) message: \(result?.description ?? "Unknown")")
         } catch {
             print("Error submitting text!")
